@@ -1,0 +1,2382 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+    content="Experience the high-performance BMW M4 CS in a minimalistic 2D studio, exploring its engineering, laser headlights, OLED signatures, and track-focused dynamics.">
+    <title>BMW M4 CS — Studio (Lite Edition)</title>
+    <!-- Google Fonts for premium typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        /* --- DESIGN TOKENS & SYSTEM CORE --- */
+        :root {
+            --color-bg: #040406;
+            --color-text: #ffffff;
+            --color-accent: #249EA0;
+            /* Unified Studio Teal */
+            --color-accent-orange: #c44536;
+            /* High-Octane Deep Red/Orange */
+            --color-muted: #8e8e93;
+            --font-display: 'Outfit', sans-serif;
+            --font-body: 'Outfit', sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body,
+        html {
+            background-color: var(--color-bg);
+            color: var(--color-text);
+            font-family: var(--font-body);
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+
+        /* --- BACKGROUND GRADIENTS SYSTEM --- */
+        #bg-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 0;
+            transition: background 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+            pointer-events: none;
+        }
+
+        #bg-glow-teal {
+            position: absolute;
+            width: 80vw;
+            height: 80vw;
+            background: radial-gradient(circle, rgba(36, 158, 160, 0.07) 0%, transparent 70%);
+            top: -20%;
+            right: -20%;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.8s ease;
+        }
+
+        #bg-glow-red {
+            position: absolute;
+            width: 80vw;
+            height: 80vw;
+            background: radial-gradient(circle, rgba(196, 69, 54, 0.05) 0%, transparent 70%);
+            bottom: -20%;
+            left: -20%;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.8s ease;
+        }
+
+        #bg-softbox {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 25vh;
+            background: linear-gradient(to bottom, rgba(255, 255, 255, 0.035) 0%, transparent 100%);
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.8s ease;
+        }
+
+        /* --- STYLING MODES SELECTORS --- */
+        body.cinematic-mode #bg-overlay {
+            background: #040406;
+        }
+        body.cinematic-mode #bg-glow-teal,
+        body.cinematic-mode #bg-glow-red {
+            opacity: 1;
+        }
+
+        body.studio-mode #bg-overlay {
+            background: radial-gradient(circle at 50% 30%, #0d0d12 0%, #040406 100%);
+        }
+        body.studio-mode #bg-softbox {
+            opacity: 1;
+        }
+
+        /* --- HEADER NAVIGATION --- */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 80px;
+            padding: 25px 8%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 10;
+            background: rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .nav-logo {
+            width: 40px;
+            height: 40px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .nav-logo img {
+            width: 100%;
+            height: 100%;
+            opacity: 0.95;
+            object-fit: contain;
+            display: block;
+        }
+
+        .nav-logo:hover img {
+            opacity: 1;
+            cursor: pointer;
+        }
+
+        nav .brand {
+            flex: 1;
+            font-family: var(--font-display);
+            font-size: 1.4rem;
+            font-weight: 900;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            background: linear-gradient(45deg, #fff, var(--color-accent));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        nav .nav-links {
+            flex: 4;
+            text-align: center;
+        }
+
+        nav .nav-links a {
+            color: var(--color-text);
+            text-decoration: none;
+            margin: 0 20px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            transition: 0.3s ease;
+        }
+
+        nav .nav-links a:hover {
+            background: linear-gradient(to right, #b72211 0%, #18b6b9 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        nav .nav-actions {
+            flex: 1;
+            text-align: right;
+        }
+
+        nav .nav-btn {
+            color: #fff;
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            padding: 8px 20px;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 30px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+            transition: all 0.3s ease-in-out;
+        }
+
+        nav .nav-btn:hover {
+            background: rgba(242, 242, 242, 0.395);
+            border-color: rgba(215, 215, 215, 0.329);
+            box-shadow: 0 0 25px rgba(160, 160, 160, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+            transform: translateY(-2px);
+        }
+
+        /* --- ACTION & BADGE STYLES (MISSING) --- */
+        .action-btn {
+            display: inline-block;
+            background: var(--color-accent);
+            color: #fff;
+            text-decoration: none;
+            padding: 12px 30px;
+            border-radius: 30px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+        }
+
+        .action-btn:hover {
+            background: #1a7e80;
+            box-shadow: 0 0 20px rgba(36, 158, 160, 0.5);
+            transform: translateY(-2px);
+        }
+
+        .badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 6px 15px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            margin-bottom: 15px;
+        }
+
+        /* --- SECTION GRID SYSTEM --- */
+        main {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+        }
+
+        section {
+            position: relative;
+            min-height: 100vh;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 120px 8%;
+            gap: 6%;
+        }
+
+        section:nth-child(even) {
+            flex-direction: row-reverse;
+        }
+
+        .section-content {
+            flex: 1;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        /* --- VISUAL DISPLAY CARD --- */
+        .visual-card {
+            flex: 1.1;
+            width: 100%;
+            max-width: 580px;
+            height: 380px;
+            border-radius: 20px;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+            z-index: 2;
+        }
+
+        .visual-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+            will-change: transform;
+        }
+
+        .visual-card:hover img {
+            transform: scale(1.04);
+        }
+
+        body.cinematic-mode .visual-card {
+            border-color: rgba(36, 158, 160, 0.2);
+            box-shadow: 0 0 25px rgba(36, 158, 160, 0.12), 0 25px 50px rgba(0, 0, 0, 0.5);
+        }
+        body.cinematic-mode .visual-card:hover {
+            box-shadow: 0 0 35px rgba(36, 158, 160, 0.28), 0 25px 60px rgba(0, 0, 0, 0.6);
+        }
+
+        body.studio-mode .visual-card {
+            border-color: rgba(255, 255, 255, 0.08);
+            box-shadow: 0 20px 45px rgba(0, 0, 0, 0.65);
+        }
+
+        /* Vibration Animation for Revving */
+        @keyframes engineVibration {
+            0% { transform: translate(0, 0); }
+            10% { transform: translate(-0.5px, 0.5px); }
+            20% { transform: translate(-1px, 0px); }
+            30% { transform: translate(0.5px, -0.5px); }
+            40% { transform: translate(1px, 0.5px); }
+            50% { transform: translate(-0.5px, -1px); }
+            60% { transform: translate(-1px, 0.5px); }
+            70% { transform: translate(1px, -0.5px); }
+            80% { transform: translate(-0.5px, 0px); }
+            90% { transform: translate(0.5px, 0.5px); }
+            100% { transform: translate(0, 0); }
+        }
+
+        .visual-card img.vibrating {
+            animation: engineVibration 0.08s infinite linear;
+        }
+
+        /* --- GLASS INFO CARDS --- */
+        .glass-card {
+            background: rgba(8, 8, 11, 0.35);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            padding: 45px;
+            border-radius: 24px;
+            width: 100%;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.55);
+        }
+
+        .glass-card h2 {
+            font-family: var(--font-display);
+            font-size: 2.1rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            margin-bottom: 25px;
+            letter-spacing: 1px;
+            background: linear-gradient(135deg, #ffffff 40%, var(--color-accent) 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+
+        body.cinematic-mode .glass-card h2 {
+            text-shadow: 0 0 15px rgba(36, 158, 160, 0.2);
+        }
+
+        .glass-card p,
+        .cockpit-spec p {
+            font-size: 1rem;
+            color: rgba(228, 228, 231, 0.78);
+            line-height: 1.7;
+            letter-spacing: 0.5px;
+        }
+
+        .cockpit-spec h2 {
+            font-family: var(--font-display);
+            font-size: 2.5rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #ffffff 40%, #ff4d4d 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .cockpit-spec ul {
+            list-style: none;
+            margin-top: 25px;
+        }
+
+        .cockpit-spec ul li {
+            position: relative;
+            padding-left: 25px;
+            margin-bottom: 15px;
+            color: rgba(228, 228, 231, 0.78);
+            font-size: 1rem;
+            line-height: 1.6;
+            letter-spacing: 0.5px;
+        }
+
+        .cockpit-spec ul li::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 8px;
+            width: 8px;
+            height: 8px;
+            background: var(--color-accent);
+            border-radius: 50%;
+            box-shadow: 0 0 8px var(--color-accent);
+        }
+
+        /* --- DUAL AUDIO SOUND PANELS LAYOUT --- */
+        .audio-wrapper {
+            margin-top: 25px;
+            width: 100%;
+            display: flex;
+            justify-content: flex-start;
+        }
+
+        /* Glass Audio Player components */
+        .glass-audio-player {
+            background: radial-gradient(circle at 10% 20%, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0.01) 80%), rgba(8, 8, 12, 0.35);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-top: 1.5px solid rgba(255, 255, 255, 0.2);
+            border-left: 1.5px solid rgba(255, 255, 255, 0.2);
+            padding: 10px 20px;
+            border-radius: 50px;
+            display: inline-flex;
+            align-items: center;
+            gap: 15px;
+            box-shadow:
+                0 15px 35px rgba(0, 0, 0, 0.5),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .glass-audio-player:hover {
+            transform: translateY(-2px) scale(1.02);
+            border-color: rgba(255, 255, 255, 0.15);
+            background: radial-gradient(circle at 10% 20%, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.02) 80%), rgba(12, 12, 18, 0.45);
+        }
+
+        .glass-audio-player.playing#engine-player {
+            animation: enginePulse 3s infinite ease-in-out;
+            border-color: rgba(36, 158, 160, 0.35);
+        }
+
+        .glass-audio-player.playing#exhaust-player {
+            animation: exhaustPulse 3s infinite ease-in-out;
+            border-color: rgba(196, 69, 54, 0.35);
+        }
+
+        .glass-audio-player .play-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: #fff;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            outline: none;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            padding: 0;
+            flex-shrink: 0;
+        }
+
+        .glass-audio-player .play-btn:hover {
+            background: var(--color-accent);
+            border-color: var(--color-accent);
+            box-shadow: 0 0 15px rgba(36, 158, 160, 0.6);
+            transform: scale(1.08);
+        }
+
+        #exhaust-player .play-btn:hover {
+            background: #c44536;
+            border-color: #c44536;
+            box-shadow: 0 0 15px rgba(196, 69, 54, 0.6);
+        }
+
+        .glass-audio-player .play-btn svg {
+            width: 14px;
+            height: 14px;
+            fill: currentColor;
+        }
+
+        .glass-audio-player .player-info {
+            display: flex;
+            flex-direction: column;
+            text-transform: uppercase;
+            font-family: var(--font-body);
+            letter-spacing: 1.5px;
+            min-width: 110px;
+        }
+
+        .glass-audio-player .player-title {
+            font-size: 0.68rem;
+            font-weight: 800;
+            color: #fff;
+            line-height: 1.2;
+        }
+
+        .glass-audio-player .player-subtitle {
+            font-size: 0.48rem;
+            color: var(--color-muted);
+            margin-top: 2px;
+            line-height: 1.2;
+        }
+
+        .glass-audio-player .wave-visualizer {
+            display: block;
+            width: 160px;
+            height: 40px;
+            background: transparent;
+            border-radius: 4px;
+        }
+
+        /* --- HUD POWER ASSEMBLY SPEC --- */
+        .hud-callout {
+            margin-top: 30px;
+            position: relative;
+            height: 60px;
+            width: 100%;
+        }
+
+        .hud-content {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            white-space: nowrap;
+            font-family: var(--font-display);
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            background: rgba(0, 0, 0, 0.4);
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            width: fit-content;
+        }
+
+        .hud-title {
+            color: rgba(255, 51, 51, 0.08);
+            -webkit-text-stroke: 0.8px rgba(255, 51, 51, 0.45);
+            text-shadow: 0 0 1px rgba(255, 51, 51, 0.25);
+            font-weight: 900;
+            font-size: 0.95rem;
+        }
+
+        .hud-sep {
+            color: rgba(36, 158, 160, 0.08);
+            -webkit-text-stroke: 0.8px rgba(36, 158, 160, 0.45);
+        }
+
+        .hud-stat {
+            color: rgba(228, 228, 231, 0.08);
+            -webkit-text-stroke: 0.8px rgba(228, 228, 231, 0.45);
+            font-size: 0.85rem;
+        }
+
+        /* --- HERO AND FOOTER CTA PANELS --- */
+        #hero {
+            padding-top: 150px;
+            padding-bottom: 60px;
+            align-items: center;
+        }
+
+        .hero-panel {
+            max-width: 500px;
+        }
+
+        .hero-panel h1 {
+            font-family: var(--font-display);
+            font-size: clamp(3rem, 5vw, 5.5rem);
+            font-weight: 900;
+            line-height: 0.95;
+            text-transform: uppercase;
+            letter-spacing: -2px;
+            margin-bottom: 25px;
+            background: linear-gradient(to right, #b72211 0%, #18b6b9 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        #cta {
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            min-height: 70vh;
+        }
+
+        .cta-panel {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            max-width: 600px;
+        }
+
+        .cta-panel h2 {
+            font-family: var(--font-display);
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: -2px;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #ffffff 40%, var(--color-accent) 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        /* Showroom Background Music Toggle */
+        .bg-music-toggle {
+            position: fixed;
+            top: 110px;
+            right: 30px;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 10% 20%, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0.01) 80%), rgba(8, 8, 12, 0.35);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-top: 1.5px solid rgba(255, 255, 255, 0.18);
+            border-left: 1.5px solid rgba(255, 255, 255, 0.18);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: rgba(255, 255, 255, 0.7);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            z-index: 15;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            outline: none;
+            padding: 0;
+        }
+
+        .bg-music-toggle:hover {
+            color: #fff;
+            border-color: rgba(255, 255, 255, 0.18);
+            background: radial-gradient(circle at 10% 20%, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.02) 80%), rgba(12, 12, 18, 0.45);
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: 0 20px 45px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        }
+
+        .bg-music-toggle.left-btn {
+            right: auto;
+            left: 30px;
+        }
+
+        .bg-music-toggle svg {
+            width: 24px;
+            height: 24px;
+            display: block;
+        }
+
+        .bg-music-toggle svg.tyre-icon {
+            animation: spinTyre 6s infinite linear;
+            animation-play-state: paused;
+            transition: color 0.4s ease;
+        }
+
+        .bg-music-toggle.playing svg.tyre-icon {
+            animation-play-state: running;
+            color: var(--color-accent);
+        }
+
+        /* Mobile Toggle Button */
+        .mobile-nav-toggle {
+            display: none;
+            background: transparent;
+            border: none;
+            color: #fff;
+            cursor: pointer;
+            width: 44px;
+            height: 44px;
+            padding: 2px;
+            align-items: center;
+            justify-content: center;
+            z-index: 11;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        .mobile-nav-toggle svg {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        /* Mobile Overlay Menu Drawer */
+        .mobile-menu-overlay {
+            position: fixed;
+            top: 80px;
+            left: 0;
+            width: 100%;
+            height: 0;
+            background: radial-gradient(circle at 50% 50%, rgba(8, 8, 12, 0.98) 0%, rgba(4, 4, 6, 0.99) 100%);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            overflow: hidden;
+            z-index: 9;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: height 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .mobile-menu-overlay.active {
+            height: calc(100vh - 80px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .mobile-menu-links {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 30px;
+            opacity: 0;
+            transform: translateY(-20px);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1) 0.1s;
+        }
+
+        .mobile-menu-overlay.active .mobile-menu-links {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .mobile-menu-links a {
+            color: #fff;
+            text-decoration: none;
+            font-size: 1.2rem;
+            font-weight: 700;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+        }
+
+        .mobile-menu-links a:hover {
+            color: var(--color-accent);
+            text-shadow: 0 0 10px rgba(36, 158, 160, 0.4);
+        }
+
+        .mobile-menu-actions {
+            margin-top: 50px;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1) 0.2s;
+        }
+
+        .mobile-menu-overlay.active .mobile-menu-actions {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* --- RESPONSIVE ADAPTATION --- */
+        @media (max-width: 968px) {
+            section {
+                flex-direction: column !important;
+                padding: 100px 6%;
+                text-align: center;
+                gap: 45px;
+                min-height: auto;
+            }
+
+            .section-content {
+                align-items: center;
+            }
+
+            .hero-panel p,
+            .cockpit-spec p {
+                margin: 0 auto;
+            }
+
+            .cockpit-spec ul li {
+                text-align: left;
+            }
+
+            .audio-wrapper {
+                justify-content: center;
+            }
+
+            .hud-content {
+                margin: 0 auto;
+            }
+
+            nav {
+                padding: 20px 6%;
+            }
+
+            nav .brand {
+                flex: 1;
+                font-size: 1.2rem;
+                text-align: left;
+                margin-left: 15px;
+            }
+
+            nav .nav-links,
+            nav .nav-actions,
+            nav .nav-logo:last-of-type {
+                display: none !important;
+            }
+
+            .mobile-nav-toggle {
+                display: flex !important;
+            }
+
+            .visual-card {
+                height: 280px;
+                width: 100%;
+            }
+        }
+
+        /* --- SCENE MODE TOGGLE (Cinematic / Studio) --- */
+        .scene-mode-toggle {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(0);
+            z-index: 120;
+            opacity: 1;
+            pointer-events: auto;
+            transition: all 0.55s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .scene-mode-inner {
+            position: relative;
+            display: flex;
+            align-items: center;
+            background: radial-gradient(circle at 10% 20%, rgba(255, 255, 255, 0.07) 0%, rgba(255, 255, 255, 0.01) 80%), rgba(8, 8, 12, 0.65);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-top: 1.5px solid rgba(255, 255, 255, 0.18);
+            border-radius: 40px;
+            padding: 5px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+            gap: 2px;
+        }
+
+        .scene-mode-inner::before {
+            content: '';
+            position: absolute;
+            left: 5px;
+            top: 5px;
+            width: calc(50% - 5px);
+            height: calc(100% - 10px);
+            border-radius: 35px;
+            background: linear-gradient(135deg, var(--color-accent) 0%, rgba(36, 158, 160, 0.75) 100%);
+            box-shadow: 0 0 18px rgba(36, 158, 160, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            z-index: 0;
+        }
+
+        .scene-mode-inner.studio-active::before {
+            left: calc(50% + 0px);
+        }
+
+        .scene-mode-btn {
+            position: relative;
+            z-index: 1;
+            padding: 8px 22px;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            outline: none;
+            border-radius: 35px;
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            transition: color 0.3s ease;
+            font-size: 0.7rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1.8px;
+            color: rgba(255, 255, 255, 0.45);
+            white-space: nowrap;
+        }
+
+        .scene-mode-btn.active {
+            color: #fff;
+        }
+
+        .scene-mode-btn svg {
+            width: 13px;
+            height: 13px;
+            flex-shrink: 0;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            transition: filter 0.3s ease;
+        }
+
+        .scene-mode-btn.active svg {
+            filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.6));
+        }
+
+        /* --- STICKY FOOTER SWITCHER --- */
+        .version-switcher {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 99;
+            background: radial-gradient(circle at 10% 20%, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.02) 80%), rgba(8, 8, 12, 0.45);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-top: 1.5px solid rgba(255, 255, 255, 0.2);
+            border-left: 1.5px solid rgba(255, 255, 255, 0.2);
+            padding: 12px 24px;
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #fff;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            text-decoration: none;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .version-switcher:hover {
+            background: var(--color-accent);
+            border-color: var(--color-accent);
+            box-shadow: 0 0 30px rgba(36, 158, 160, 0.6);
+            transform: translateY(-4px);
+        }
+
+        .version-switcher svg {
+            width: 18px;
+            height: 18px;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 2.2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+    </style>
+</head>
+
+<body class="cinematic-mode">
+
+    <!-- 2D Background Visual System -->
+    <div id="bg-overlay">
+        <div id="bg-glow-teal"></div>
+        <div id="bg-glow-red"></div>
+        <div id="bg-softbox"></div>
+    </div>
+
+    <!-- Navigation Header -->
+    <nav>
+        <div class="nav-logo">
+            <img onclick="location.href='#hero'" src="logo.png" style="margin-right: 30px;">
+        </div>
+        <div class="brand">BMW M4 CS <span style="font-size: 0.6rem; vertical-align: top; color: var(--color-accent);">LITE</span></div>
+        <div class="nav-links">
+            <a href="#hero">Stance</a>
+            <a href="#headlight">Lights</a>
+            <a href="#cockpit">Cockpit</a>
+            <a href="#engineering">Engine</a>
+            <a href="#tyres">Dynamics</a>
+            <a href="#exhaust">Exhaust</a>
+            <a href="#cta">Look</a>
+        </div>
+        <div class="nav-actions">
+            <a href="#cta" class="nav-btn">Reserve</a>
+        </div>
+        <div class="nav-logo">
+            <img onclick="location.href='#engineering'" src="mcomp.png" style="margin-left: 30px;">
+        </div>
+
+        <!-- Mobile Toggle Button -->
+        <button class="mobile-nav-toggle" aria-label="Toggle Menu" id="mobile-nav-toggle-btn">
+            <svg viewBox="0 0 100 100" style="width:100%; height:100%;">
+                <line x1="20" y1="30" x2="80" y2="30" stroke="currentColor" stroke-width="6" stroke-linecap="round" />
+                <line x1="20" y1="50" x2="80" y2="50" stroke="currentColor" stroke-width="6" stroke-linecap="round" />
+                <line x1="20" y1="70" x2="80" y2="70" stroke="currentColor" stroke-width="6" stroke-linecap="round" />
+            </svg>
+        </button>
+    </nav>
+
+    <!-- Mobile Overlay Menu -->
+    <div id="mobile-menu-overlay" class="mobile-menu-overlay">
+        <div class="mobile-menu-links">
+            <a href="#hero">Stance</a>
+            <a href="#headlight">Lights</a>
+            <a href="#cockpit">Cockpit</a>
+            <a href="#engineering">Engine</a>
+            <a href="#tyres">Dynamics</a>
+            <a href="#exhaust">Exhaust</a>
+            <a href="#cta">Look</a>
+        </div>
+        <div class="mobile-menu-actions">
+            <a href="#cta" class="nav-btn">Reserve</a>
+        </div>
+    </div>
+
+    <!-- Active Ambient Background Music Trigger Buttons -->
+    <!-- Showroom Background Music Toggle (Ambient / Chimes) -->
+    <button class="bg-music-toggle" aria-label="Toggle Background Music" id="music-toggle-btn"
+        title="Showroom Ambient Track (Right Top)">
+        <svg class="tyre-icon" viewBox="0 0 100 100">
+            <circle cx="50" cy="50" r="48" stroke="currentColor" stroke-width="2.5" fill="none" opacity="0.3" />
+            <circle cx="50" cy="50" r="39" stroke="currentColor" stroke-width="1.4" fill="none" />
+            <circle cx="50" cy="50" r="9.5" fill="#040406" stroke="currentColor" stroke-width="1.0" />
+            <!-- Spokes -->
+            <line x1="50" y1="11" x2="50" y2="39" stroke="currentColor" stroke-width="1" />
+            <line x1="50" y1="61" x2="50" y2="89" stroke="currentColor" stroke-width="1" />
+            <line x1="11" y1="50" x2="39" y2="50" stroke="currentColor" stroke-width="1" />
+            <line x1="61" y1="50" x2="89" y2="50" stroke="currentColor" stroke-width="1" />
+            <line x1="22.5" y1="22.5" x2="42" y2="42" stroke="currentColor" stroke-width="1" />
+            <line x1="58" y1="58" x2="77.5" y2="77.5" stroke="currentColor" stroke-width="1" />
+            <line x1="77.5" y1="22.5" x2="58" y2="42" stroke="currentColor" stroke-width="1" />
+            <line x1="42" y1="58" x2="22.5" y2="77.5" stroke="currentColor" stroke-width="1" />
+        </svg>
+    </button>
+
+    <!-- Party Background Music Toggle (Sequenced EDM) -->
+    <button class="bg-music-toggle left-btn" aria-label="Toggle Party Background Music" id="party-music-toggle-btn"
+        title="Party / Car Studio Track (Left Top)">
+        <svg class="tyre-icon" viewBox="0 0 100 100">
+            <circle cx="50" cy="50" r="48" stroke="currentColor" stroke-width="2.5" fill="none" opacity="0.3" />
+            <circle cx="50" cy="50" r="39" stroke="currentColor" stroke-width="1.4" fill="none" />
+            <circle cx="50" cy="50" r="9.5" fill="#040406" stroke="currentColor" stroke-width="1.0" />
+            <!-- Spokes -->
+            <line x1="50" y1="11" x2="50" y2="39" stroke="currentColor" stroke-width="1" />
+            <line x1="50" y1="61" x2="50" y2="89" stroke="currentColor" stroke-width="1" />
+            <line x1="11" y1="50" x2="39" y2="50" stroke="currentColor" stroke-width="1" />
+            <line x1="61" y1="50" x2="89" y2="50" stroke="currentColor" stroke-width="1" />
+            <line x1="22.5" y1="22.5" x2="42" y2="42" stroke="currentColor" stroke-width="1" />
+            <line x1="58" y1="58" x2="77.5" y2="77.5" stroke="currentColor" stroke-width="1" />
+            <line x1="77.5" y1="22.5" x2="58" y2="42" stroke="currentColor" stroke-width="1" />
+            <line x1="42" y1="58" x2="22.5" y2="77.5" stroke="currentColor" stroke-width="1" />
+        </svg>
+    </button>
+
+    <!-- Visual Mode Toggle HUD at Top Center -->
+    <div class="scene-mode-toggle" id="scene-mode-toggle">
+        <div class="scene-mode-inner" id="scene-mode-inner">
+            <button class="scene-mode-btn active" id="scene-cinematic-btn" data-mode="cinematic">
+                <svg viewBox="0 0 24 24">
+                    <rect x="2" y="7" width="20" height="14" rx="2" />
+                    <path d="M16 2l-2.5 5M10 2L7.5 7M8 7v14M16 7v14" />
+                </svg>
+                Cinematic
+            </button>
+            <button class="scene-mode-btn" id="scene-studio-btn" data-mode="studio">
+                <svg viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="10" />
+                    <circle cx="12" cy="12" r="4" fill="currentColor" />
+                </svg>
+                Studio
+            </button>
+        </div>
+    </div>
+
+    <!-- Main Content Sections -->
+    <main>
+        <!-- Stance / Hero Section -->
+        <section id="hero">
+            <div class="section-content">
+                <div class="hero-panel">
+                    <div class="badge">Dynamic Showcase — Lite</div>
+                    <h1>BMW M4 CS</h1>
+                    <p style="margin-bottom: 30px;">Pure raw performance and lightweight track engineering, presented in a high-efficiency visual showroom.</p>
+                    <a href="#headlight" class="action-btn" style="padding: 10px 25px; font-size: 0.75rem;">Explore Details</a>
+                </div>
+            </div>
+            <div class="visual-card">
+                <img src="m4cs_stance.png" alt="BMW M4 CS Stance">
+            </div>
+        </section>
+
+        <!-- Laser Headlight Section -->
+        <section id="headlight">
+            <div class="section-content">
+                <div class="glass-card">
+                    <h2>Laser Illumination</h2>
+                    <p>High-definition adaptive laser matrix projector array, projecting a piercing signature silhouette with
+                        dynamic roadway pathfinder mapping. Crucial for high-speed night runs on the Nürburgring.</p>
+                </div>
+            </div>
+            <div class="visual-card">
+                <img src="m4cs_headlight.png" alt="BMW M4 CS Laser Headlight">
+            </div>
+        </section>
+
+        <!-- Cockpit Section -->
+        <section id="cockpit">
+            <div class="section-content">
+                <div class="cockpit-spec">
+                    <h2>Command Center</h2>
+                    <p>Aerospace-grade autoclave carbon composite structures, housing tactile high-frequency telemetry matrices and
+                        racing telemetry interfaces.</p>
+                    <ul>
+                        <li>M-Mode Driver Integration</li>
+                        <li>Alcantara Racing Steering Wheel</li>
+                        <li>Autoclave Carbon Bucket Seats</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="visual-card">
+                <img src="m4cs_cockpit.png" alt="BMW M4 CS Cockpit Interior">
+            </div>
+        </section>
+
+        <!-- Engineering / Engine Section -->
+        <section id="engineering">
+            <div class="section-content">
+                <div class="glass-card">
+                    <h2>Power Assembly</h2>
+                    <p style="margin-bottom: 25px;">The twin-turbocharged inline-6 engine produces a massive output, delivering power to the tarmac with zero delay.</p>
+                    
+                    <!-- HUD Specs callout -->
+                    <div class="hud-content">
+                        <span class="hud-title">POWER ASSEMBLY</span>
+                        <span class="hud-sep">//</span>
+                        <span class="hud-stat">INLINE-6 TWINTURBO</span>
+                    </div>
+
+                    <!-- Interactive Engine Audio Player -->
+                    <div class="audio-wrapper">
+                        <div class="glass-audio-player" id="engine-player">
+                            <button class="play-btn" aria-label="Play Engine Sound">
+                                <svg class="play-icon" viewBox="0 0 24 24">
+                                    <polygon points="5 3 19 12 5 21 5 3" />
+                                </svg>
+                                <svg class="pause-icon" viewBox="0 0 24 24" style="display:none;">
+                                    <rect x="6" y="4" width="4" height="16" />
+                                    <rect x="14" y="4" width="4" height="16" />
+                                </svg>
+                            </button>
+                            <div class="player-info">
+                                <span class="player-title">Engine sound</span>
+                                <span class="player-subtitle">revs on hover</span>
+                            </div>
+                            <canvas class="wave-visualizer" id="engine-canvas" width="160" height="40" data-accent="#249ea0"
+                                data-color1="rgba(36, 158, 160, 0.95)" data-color2="rgba(30, 200, 203, 0.70)"
+                                data-color3="rgba(36, 158, 160, 0.45)" data-color4="rgba(255, 255, 255, 0.25)"
+                                data-color5="rgba(36, 158, 160, 0.15)"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="visual-card">
+                <img src="m4cs_engine.png" alt="BMW M4 CS TwinPower Turbo Engine">
+            </div>
+        </section>
+
+        <!-- Tyres / Dynamics Section -->
+        <section id="tyres">
+            <div class="section-content">
+                <div class="glass-card">
+                    <h2>Forged Dynamics</h2>
+                    <p>Monoblock forged competition wheels, wrapped in high-hysteresis sticky racing slick compound for extreme
+                        lateral acceleration indices. Complete with carbon-ceramic brakes for fade-free stopping power.</p>
+                </div>
+            </div>
+            <div class="visual-card">
+                <img src="m4cs_tyre.png" alt="BMW M4 CS Wheel and Tyres">
+            </div>
+        </section>
+
+        <!-- Quad Exhaust Section -->
+        <section id="exhaust">
+            <div class="section-content">
+                <div class="glass-card">
+                    <h2>Acoustic Dominance</h2>
+                    <p style="margin-bottom: 25px;">Active valve-controlled quad-titanium exhaust array, tuning raw engine combustion pulses into a symphonic, spine-tingling acoustic roar.</p>
+
+                    <!-- Interactive Exhaust Audio Player -->
+                    <div class="audio-wrapper">
+                        <div class="glass-audio-player" id="exhaust-player">
+                            <button class="play-btn" aria-label="Play Exhaust Sound">
+                                <svg class="play-icon" viewBox="0 0 24 24">
+                                    <polygon points="5 3 19 12 5 21 5 3" />
+                                </svg>
+                                <svg class="pause-icon" viewBox="0 0 24 24" style="display:none;">
+                                    <rect x="6" y="4" width="4" height="16" />
+                                    <rect x="14" y="4" width="4" height="16" />
+                                </svg>
+                            </button>
+                            <div class="player-info">
+                                <span class="player-title">Exhaust sound</span>
+                                <span class="player-subtitle">revs on hover</span>
+                            </div>
+                            <canvas class="wave-visualizer" id="exhaust-canvas" width="160" height="40" data-accent="#c44536"
+                                data-color1="rgba(196, 69, 54, 0.95)" data-color2="rgba(235, 94, 40, 0.70)"
+                                data-color3="rgba(196, 69, 54, 0.45)" data-color4="rgba(255, 255, 255, 0.25)"
+                                data-color5="rgba(196, 69, 54, 0.15)"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="visual-card">
+                <img src="m4cs_exhaust.png" alt="BMW M4 CS Quad Titanium Exhaust">
+            </div>
+        </section>
+
+        <!-- OLED Taillight Section -->
+        <section id="taillight">
+            <div class="section-content">
+                <div class="glass-card">
+                    <h2>OLED Signatures</h2>
+                    <p>Hyper-detailed three-dimensional organic light emitting diode (OLED) signatures, forming a high-contrast
+                        trailing light aesthetic that commands presence even from behind.</p>
+                </div>
+            </div>
+            <div class="visual-card">
+                <img src="m4cs_taillight.png" alt="BMW M4 CS OLED Taillight">
+            </div>
+        </section>
+
+        <!-- BMW Brand Stance Section -->
+        <section id="brand">
+            <div class="section-content">
+                <div class="glass-card">
+                    <h2>The Brand BMW</h2>
+                    <p>The M4 Competition Sport represents the absolute pinnacle of motorsport breeding. A brutal track-focused
+                        weapon engineered with uncompromising dynamics, direct feedback, and aggressive styling.</p>
+                </div>
+            </div>
+            <div class="visual-card">
+                <img src="mcomp.png" alt="BMW M Competition Logo" style="object-fit: contain; width: 75%; height: auto; margin: auto;">
+            </div>
+        </section>
+
+        <!-- Reservation CTA section -->
+        <section id="cta">
+            <div class="cta-panel">
+                <h2>Acquire Stance.</h2>
+                <p style="color: var(--color-muted); margin-bottom: 20px; font-size: 1.1rem;">Secure your custom BMW M4 Competition Sport order track slot today.</p>
+                <a href="#" class="action-btn">Configure & Order</a>
+            </div>
+        </section>
+    </main>
+
+    <!-- Version Switcher Floating Link (Bottom Right) -->
+    <a class="version-switcher" href="index.html" aria-label="Switch to 3D Experience">
+        <svg viewBox="0 0 24 24">
+            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
+        </svg>
+        <span>Switch to 3D</span>
+    </a>
+
+    <!-- Interactive JS scripts -->
+    <script>
+        // --- 1. VIEWPORT LINK ACTIVE SCRATCH HANDLER ---
+        const sections = document.querySelectorAll('main section');
+        const navLinks = document.querySelectorAll('nav .nav-links a');
+
+        window.addEventListener('scroll', () => {
+            let currentActive = "";
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                if (window.scrollY >= (sectionTop - 300)) {
+                    currentActive = section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href').includes(currentActive)) {
+                    link.style.borderBottom = "2px solid var(--color-accent)";
+                } else {
+                    link.style.borderBottom = "none";
+                }
+            });
+        });
+
+        // --- 2. CINEMATIC AND STUDIO SCENE MODE SWITCHING ---
+        const modeInner = document.getElementById('scene-mode-inner');
+        const modeCinematicBtn = document.getElementById('scene-cinematic-btn');
+        const modeStudioBtn = document.getElementById('scene-studio-btn');
+
+        function applyVisualMode(mode) {
+            if (mode === 'cinematic') {
+                document.body.classList.remove('studio-mode');
+                document.body.classList.add('cinematic-mode');
+                modeInner.classList.remove('studio-active');
+                modeCinematicBtn.classList.add('active');
+                modeStudioBtn.classList.remove('active');
+            } else {
+                document.body.classList.remove('cinematic-mode');
+                document.body.classList.add('studio-mode');
+                modeInner.classList.add('studio-active');
+                modeCinematicBtn.classList.remove('active');
+                modeStudioBtn.classList.add('active');
+            }
+        }
+
+        modeCinematicBtn.addEventListener('click', () => applyVisualMode('cinematic'));
+        modeStudioBtn.addEventListener('click', () => applyVisualMode('studio'));
+
+
+        // --- 3. MOBILE MENU TOGGLE DRAWER ---
+        const mobileToggleBtn = document.getElementById('mobile-nav-toggle-btn');
+        const mobileOverlay = document.getElementById('mobile-menu-overlay');
+
+        if (mobileToggleBtn && mobileOverlay) {
+            const overlayLinks = mobileOverlay.querySelectorAll('a');
+            mobileToggleBtn.addEventListener('click', () => {
+                mobileOverlay.classList.toggle('active');
+            });
+            overlayLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    mobileOverlay.classList.remove('active');
+                });
+            });
+        }
+
+
+        // --- 4. INTERACTIVE AUDIO SYNTHESIS ENGINE ---
+        class EngineSoundGenerator {
+            constructor(type = 'engine') {
+                this.type = type;
+                this.audioCtx = null;
+                this.analyser = null;
+                this.isPlaying = false;
+                this.oscillators = [];
+                this.gainNode = null;
+                this.filterNode = null;
+                this.noiseNode = null;
+                this.noiseFilter = null;
+                this.lfo = null;
+                this.lfoGain = null;
+            }
+
+            init() {
+                this.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                this.analyser = this.audioCtx.createAnalyser();
+                this.analyser.fftSize = 64;
+
+                this.gainNode = this.audioCtx.createGain();
+                this.gainNode.gain.setValueAtTime(0.0, this.audioCtx.currentTime);
+
+                this.filterNode = this.audioCtx.createBiquadFilter();
+                this.filterNode.type = 'lowpass';
+                this.filterNode.frequency.setValueAtTime(this.type === 'engine' ? 180 : 320, this.audioCtx.currentTime);
+                this.filterNode.Q.setValueAtTime(1.5, this.audioCtx.currentTime);
+
+                const baseFreq = this.type === 'engine' ? 28 : 22;
+                const numOscs = this.type === 'engine' ? 4 : 5;
+
+                for (let i = 0; i < numOscs; i++) {
+                    const osc = this.audioCtx.createOscillator();
+                    osc.type = i % 2 === 0 ? 'sawtooth' : 'triangle';
+
+                    const multiplier = i === 0 ? 1 : (i === 1 ? 1.5 : (i === 2 ? 2.0 : 3.5));
+                    osc.frequency.setValueAtTime(baseFreq * multiplier, this.audioCtx.currentTime);
+                    osc.detune.setValueAtTime((Math.random() - 0.5) * 15, this.audioCtx.currentTime);
+
+                    const oscGain = this.audioCtx.createGain();
+                    oscGain.gain.setValueAtTime(i === 0 ? 0.35 : 0.15, this.audioCtx.currentTime);
+
+                    osc.connect(oscGain);
+                    oscGain.connect(this.filterNode);
+                    this.oscillators.push(osc);
+                }
+
+                const bufferSize = this.audioCtx.sampleRate * 2;
+                const noiseBuffer = this.audioCtx.createBuffer(1, bufferSize, this.audioCtx.sampleRate);
+                const output = noiseBuffer.getChannelData(0);
+                for (let i = 0; i < bufferSize; i++) {
+                    output[i] = Math.random() * 2 - 1;
+                }
+
+                this.noiseNode = this.audioCtx.createBufferSource();
+                this.noiseNode.buffer = noiseBuffer;
+                this.noiseNode.loop = true;
+
+                this.noiseFilter = this.audioCtx.createBiquadFilter();
+                this.noiseFilter.type = 'bandpass';
+                this.noiseFilter.frequency.setValueAtTime(this.type === 'engine' ? 120 : 160, this.audioCtx.currentTime);
+                this.noiseFilter.Q.setValueAtTime(1.0, this.audioCtx.currentTime);
+
+                const noiseGain = this.audioCtx.createGain();
+                noiseGain.gain.setValueAtTime(this.type === 'engine' ? 0.04 : 0.16, this.audioCtx.currentTime);
+
+                this.noiseNode.connect(this.noiseFilter);
+                this.noiseFilter.connect(noiseGain);
+                noiseGain.connect(this.gainNode);
+
+                this.lfo = this.audioCtx.createOscillator();
+                this.lfo.type = 'sine';
+                this.lfo.frequency.setValueAtTime(this.type === 'engine' ? 14 : 9, this.audioCtx.currentTime);
+
+                this.lfoGain = this.audioCtx.createGain();
+                this.lfoGain.gain.setValueAtTime(0.2, this.audioCtx.currentTime);
+
+                this.lfo.connect(this.lfoGain);
+                this.lfoGain.connect(this.gainNode.gain);
+
+                this.filterNode.connect(this.gainNode);
+                this.gainNode.connect(this.analyser);
+                this.analyser.connect(this.audioCtx.destination);
+            }
+
+            play() {
+                if (this.isPlaying) return;
+                if (!this.audioCtx) this.init();
+                if (this.audioCtx.state === 'suspended') this.audioCtx.resume();
+
+                this.oscillators.forEach(osc => osc.start());
+                this.noiseNode.start();
+                this.lfo.start();
+
+                this.gainNode.gain.cancelScheduledValues(this.audioCtx.currentTime);
+                this.gainNode.gain.setValueAtTime(0.0, this.audioCtx.currentTime);
+                this.gainNode.gain.linearRampToValueAtTime(this.type === 'engine' ? 0.70 : 0.80, this.audioCtx.currentTime + 0.15);
+
+                this.isPlaying = true;
+            }
+
+            stop() {
+                if (!this.isPlaying) return;
+
+                this.gainNode.gain.cancelScheduledValues(this.audioCtx.currentTime);
+                this.gainNode.gain.linearRampToValueAtTime(0.0, this.audioCtx.currentTime + 0.2);
+
+                const oscsToStop = this.oscillators;
+                const noiseToStop = this.noiseNode;
+                const lfoToStop = this.lfo;
+
+                setTimeout(() => {
+                    oscsToStop.forEach(osc => { try { osc.stop(); } catch (e) {} });
+                    try { noiseToStop.stop(); } catch (e) {}
+                    try { lfoToStop.stop(); } catch (e) {}
+                }, 250);
+
+                this.oscillators = [];
+                this.noiseNode = null;
+                this.lfo = null;
+                this.audioCtx = null;
+                this.isPlaying = false;
+            }
+        }
+
+        const engineSound = new EngineSoundGenerator('engine');
+        const exhaustSound = new EngineSoundGenerator('exhaust');
+
+        // --- 5. AUDIO PLAYERS & WAVE VISUALIZER LOOP ---
+        function setupAudioPlayer(playerId, generator) {
+            const playerEl = document.getElementById(playerId);
+            if (!playerEl) return;
+
+            const playBtn = playerEl.querySelector('.play-btn');
+            const playIcon = playBtn.querySelector('.play-icon');
+            const pauseIcon = playBtn.querySelector('.pause-icon');
+            const canvas = playerEl.querySelector('.wave-visualizer');
+            const ctx = canvas.getContext('2d');
+
+            // Find visual card image to shake in the same section
+            const section = playerEl.closest('section');
+            const visualImg = section ? section.querySelector('.visual-card img') : null;
+
+            let phase = 0;
+            let isHovered = false;
+            let smoothHover = 0;
+            let lastFrameTime = performance.now();
+
+            function renderWave() {
+                requestAnimationFrame(renderWave);
+
+                const now = performance.now();
+                const dt = Math.min((now - lastFrameTime) / 1000, 0.1);
+                lastFrameTime = now;
+
+                const hoverEase = 1 - Math.exp(-8 * dt);
+                smoothHover += ((isHovered ? 1.0 : 0.0) - smoothHover) * hoverEase;
+
+                let amplitude = 1.5;
+                let phaseSpeed = 0.04;
+
+                const colors = [
+                    canvas.dataset.color1 || 'rgba(36, 158, 160, 0.95)',
+                    canvas.dataset.color2 || 'rgba(30, 200, 203, 0.70)',
+                    canvas.dataset.color3 || 'rgba(36, 158, 160, 0.45)',
+                    canvas.dataset.color4 || 'rgba(255, 255, 255, 0.25)',
+                    canvas.dataset.color5 || 'rgba(36, 158, 160, 0.12)'
+                ];
+
+                if (generator.isPlaying && generator.analyser) {
+                    const bufferLength = generator.analyser.frequencyBinCount;
+                    const dataArray = new Uint8Array(bufferLength);
+                    generator.analyser.getByteFrequencyData(dataArray);
+
+                    let sum = 0;
+                    for (let i = 0; i < bufferLength; i++) {
+                        sum += dataArray[i];
+                    }
+                    const average = sum / bufferLength;
+
+                    amplitude = (average / 255) * 10 + 2.5;
+                    amplitude *= (1.0 + smoothHover * 0.28);
+                    phaseSpeed = generator.lfo ? (generator.lfo.frequency.value * 0.012) : 0.15;
+                } else {
+                    amplitude = 1.6 + smoothHover * 0.9;
+                    phaseSpeed = 0.03 + smoothHover * 0.03;
+                }
+
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                phase += phaseSpeed;
+
+                const numWaves = 5;
+                for (let l = 0; l < numWaves; l++) {
+                    ctx.beginPath();
+                    if (generator.isPlaying) {
+                        ctx.shadowBlur = (12 - l * 2) * (1.0 + smoothHover * 0.4);
+                        ctx.shadowColor = canvas.dataset.accent || '#249EA0';
+                    } else {
+                        ctx.shadowBlur = 0;
+                    }
+
+                    ctx.lineWidth = l === 0 ? 2.2 : (l === 1 ? 1.4 : (l === 2 ? 0.9 : 0.5));
+                    ctx.strokeStyle = colors[l % colors.length];
+
+                    const wavePhase = phase + l * (Math.PI / 2.2);
+                    const baseFreq = (0.038 - l * 0.006) * (1.0 + smoothHover * 0.25);
+
+                    for (let x = 0; x < canvas.width; x++) {
+                        const envelope = Math.sin((x / canvas.width) * Math.PI);
+                        const primarySine = Math.sin(x * baseFreq + wavePhase) * 0.65;
+                        const secondaryHarmonic = Math.sin(x * (baseFreq * 2.2) - wavePhase * 1.3) * (0.22 + smoothHover * 0.08);
+                        const tertiaryJitter = Math.sin(x * (baseFreq * 4.6) + wavePhase * 2.5) * (0.05 + smoothHover * 0.05);
+
+                        const waveY = (primarySine + secondaryHarmonic + tertiaryJitter) * amplitude * envelope;
+                        const y = canvas.height / 2 + waveY;
+
+                        if (x === 0) {
+                            ctx.moveTo(x, y);
+                        } else {
+                            ctx.lineTo(x, y);
+                        }
+                    }
+                    ctx.stroke();
+                }
+            }
+
+            renderWave();
+
+            playBtn.addEventListener('click', () => {
+                if (generator.isPlaying) {
+                    generator.stop();
+                    playerEl.classList.remove('playing');
+                    playIcon.style.display = 'block';
+                    pauseIcon.style.display = 'none';
+
+                    if (visualImg) visualImg.classList.remove('vibrating');
+
+                    if (window.ambientMusic && window.ambientMusic.isPlaying) {
+                        window.ambientMusic.fadeTo(0.32, 1.0);
+                    }
+                    if (window.partyMusic && window.partyMusic.isPlaying) {
+                        window.partyMusic.fadeTo(0.42, 1.0);
+                    }
+                } else {
+                    if (generator === engineSound && exhaustSound.isPlaying) {
+                        document.getElementById('exhaust-player').querySelector('.play-btn').click();
+                    } else if (generator === exhaustSound && engineSound.isPlaying) {
+                        document.getElementById('engine-player').querySelector('.play-btn').click();
+                    }
+
+                    generator.play();
+                    playerEl.classList.add('playing');
+                    playIcon.style.display = 'none';
+                    pauseIcon.style.display = 'block';
+
+                    if (isHovered && visualImg) {
+                        visualImg.classList.add('vibrating');
+                    }
+
+                    if (window.ambientMusic && window.ambientMusic.isPlaying) {
+                        window.ambientMusic.fadeTo(0.04, 0.8);
+                    }
+                    if (window.partyMusic && window.partyMusic.isPlaying) {
+                        window.partyMusic.fadeTo(0.05, 0.8);
+                    }
+                }
+            });
+
+            playerEl.addEventListener('mouseenter', () => {
+                isHovered = true;
+                if (generator.isPlaying && visualImg) {
+                    visualImg.classList.add('vibrating');
+                }
+                if (generator.isPlaying && generator.audioCtx) {
+                    const time = generator.audioCtx.currentTime;
+                    const baseFreq = generator.type === 'engine' ? 28 : 22;
+                    generator.oscillators.forEach((osc, idx) => {
+                        const multiplier = idx === 0 ? 1 : (idx === 1 ? 1.5 : (idx === 2 ? 2.0 : 3.5));
+                        osc.frequency.setValueAtTime(osc.frequency.value, time);
+                        osc.frequency.exponentialRampToValueAtTime(baseFreq * multiplier * 2.2, time + 0.5);
+                    });
+                    generator.lfo.frequency.setValueAtTime(generator.lfo.frequency.value, time);
+                    generator.lfo.frequency.linearRampToValueAtTime(generator.type === 'engine' ? 32 : 22, time + 0.5);
+                }
+            });
+
+            playerEl.addEventListener('mouseleave', () => {
+                isHovered = false;
+                if (visualImg) visualImg.classList.remove('vibrating');
+                if (generator.isPlaying && generator.audioCtx) {
+                    const time = generator.audioCtx.currentTime;
+                    const baseFreq = generator.type === 'engine' ? 28 : 22;
+                    generator.oscillators.forEach((osc, idx) => {
+                        const multiplier = idx === 0 ? 1 : (idx === 1 ? 1.5 : (idx === 2 ? 2.0 : 3.5));
+                        osc.frequency.setValueAtTime(osc.frequency.value, time);
+                        osc.frequency.exponentialRampToValueAtTime(baseFreq * multiplier, time + 0.7);
+                    });
+                    generator.lfo.frequency.setValueAtTime(generator.lfo.frequency.value, time);
+                    generator.lfo.frequency.linearRampToValueAtTime(generator.type === 'engine' ? 14 : 9, time + 0.7);
+                }
+            });
+        }
+
+        setupAudioPlayer('engine-player', engineSound);
+        setupAudioPlayer('exhaust-player', exhaustSound);
+
+
+        // --- 6. BACKGROUND SHOWROOM AMBIENT & PARTY MUSIC SYNTHS ---
+        class AmbientMusicGenerator {
+            constructor() {
+                this.audioCtx = null;
+                this.isPlaying = false;
+                this.filterNode = null;
+                this.padFilterNode = null;
+                this.delayL = null;
+                this.delayR = null;
+                this.feedbackL = null;
+                this.feedbackR = null;
+                this.panDelayL = null;
+                this.panDelayR = null;
+                this.mainGain = null;
+                this.chordTimeout = null;
+                this.currentChordIdx = 0;
+                this.activeChordNodes = []; // store nodes for cleanup
+                this.chords = [
+                    { root: 87.31, notes: [174.61, 261.63, 329.63, 392.00, 523.25, 659.25] },
+                    { root: 130.81, notes: [261.63, 329.63, 392.00, 493.88, 587.33, 783.99] },
+                    { root: 98.00, notes: [196.00, 293.66, 392.00, 440.00, 587.33, 739.99] },
+                    { root: 110.00, notes: [220.00, 329.63, 392.00, 523.25, 587.33, 659.25] }
+                ];
+            }
+
+            init() {
+                this.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                this.filterNode = this.audioCtx.createBiquadFilter();
+                this.filterNode.type = 'lowpass';
+                this.filterNode.frequency.setValueAtTime(1000, this.audioCtx.currentTime);
+                this.filterNode.Q.setValueAtTime(0.7, this.audioCtx.currentTime);
+
+                this.padFilterNode = this.audioCtx.createBiquadFilter();
+                this.padFilterNode.type = 'lowpass';
+                this.padFilterNode.frequency.setValueAtTime(150, this.audioCtx.currentTime);
+                this.padFilterNode.Q.setValueAtTime(1.0, this.audioCtx.currentTime);
+
+                this.delayL = this.audioCtx.createDelay(1.0);
+                this.delayR = this.audioCtx.createDelay(1.0);
+                this.feedbackL = this.audioCtx.createGain();
+                this.feedbackR = this.audioCtx.createGain();
+                this.panDelayL = this.audioCtx.createStereoPanner ? this.audioCtx.createStereoPanner() : null;
+                this.panDelayR = this.audioCtx.createStereoPanner ? this.audioCtx.createStereoPanner() : null;
+
+                this.delayL.delayTime.setValueAtTime(0.38, this.audioCtx.currentTime);
+                this.delayR.delayTime.setValueAtTime(0.55, this.audioCtx.currentTime);
+                this.feedbackL.gain.setValueAtTime(0.35, this.audioCtx.currentTime);
+                this.feedbackR.gain.setValueAtTime(0.35, this.audioCtx.currentTime);
+                if (this.panDelayL) this.panDelayL.pan.setValueAtTime(-0.7, this.audioCtx.currentTime);
+                if (this.panDelayR) this.panDelayR.pan.setValueAtTime(0.7, this.audioCtx.currentTime);
+
+                this.bassFilterNode = this.audioCtx.createBiquadFilter();
+                this.bassFilterNode.type = 'lowpass';
+                this.bassFilterNode.frequency.setValueAtTime(130, this.audioCtx.currentTime);
+                this.bassFilterNode.Q.setValueAtTime(1.0, this.audioCtx.currentTime);
+
+                this.bassDelayNode = this.audioCtx.createDelay(0.1);
+                this.bassDelayNode.delayTime.setValueAtTime(0.024, this.audioCtx.currentTime);
+
+                this.bassPanL = this.audioCtx.createStereoPanner ? this.audioCtx.createStereoPanner() : null;
+                this.bassPanR = this.audioCtx.createStereoPanner ? this.audioCtx.createStereoPanner() : null;
+                if (this.bassPanL) this.bassPanL.pan.setValueAtTime(-0.80, this.audioCtx.currentTime);
+                if (this.bassPanR) this.bassPanR.pan.setValueAtTime(0.80, this.audioCtx.currentTime);
+
+                this.mainGain = this.audioCtx.createGain();
+                this.mainGain.gain.setValueAtTime(0.0, this.audioCtx.currentTime);
+
+                this.filterNode.connect(this.delayL);
+                this.delayL.connect(this.feedbackL);
+                this.feedbackL.connect(this.delayR);
+                this.delayR.connect(this.feedbackR);
+                this.feedbackR.connect(this.delayL);
+                this.filterNode.connect(this.mainGain);
+
+                if (this.panDelayL) {
+                    this.delayL.connect(this.panDelayL);
+                    this.panDelayL.connect(this.mainGain);
+                } else {
+                    this.delayL.connect(this.mainGain);
+                }
+                if (this.panDelayR) {
+                    this.delayR.connect(this.panDelayR);
+                    this.panDelayR.connect(this.mainGain);
+                } else {
+                    this.delayR.connect(this.mainGain);
+                }
+                this.padFilterNode.connect(this.mainGain);
+                this.mainGain.connect(this.audioCtx.destination);
+            }
+
+            start() {
+                if (this.isPlaying) return;
+                if (!this.audioCtx) this.init();
+                if (this.audioCtx.state === 'suspended') this.audioCtx.resume();
+
+                this.isPlaying = true;
+                this.mainGain.gain.cancelScheduledValues(this.audioCtx.currentTime);
+                this.mainGain.gain.setValueAtTime(0.0, this.audioCtx.currentTime);
+
+                const targetGain = (engineSound.isPlaying || exhaustSound.isPlaying) ? 0.03 : 0.28;
+                this.mainGain.gain.linearRampToValueAtTime(targetGain, this.audioCtx.currentTime + 2.5);
+
+                this.playNextChord();
+            }
+
+            fadeTo(targetGain, duration = 1.0) {
+                if (!this.isPlaying || !this.audioCtx || !this.mainGain) return;
+                const now = this.audioCtx.currentTime;
+                this.mainGain.gain.cancelScheduledValues(now);
+                this.mainGain.gain.setValueAtTime(this.mainGain.gain.value, now);
+                this.mainGain.gain.linearRampToValueAtTime(targetGain, now + duration);
+            }
+
+            playNextChord() {
+                if (!this.isPlaying) return;
+                const now = this.audioCtx.currentTime;
+                const chord = this.chords[this.currentChordIdx];
+                const duration = 6.0;
+
+                const chordOscillators = [];
+                const chordGains = [];
+
+                const padOsc = this.audioCtx.createOscillator();
+                padOsc.type = 'triangle';
+                padOsc.frequency.setValueAtTime(chord.root, now);
+
+                const vibratoLfo = this.audioCtx.createOscillator();
+                vibratoLfo.type = 'sine';
+                vibratoLfo.frequency.setValueAtTime(0.25, now);
+                const vibratoGain = this.audioCtx.createGain();
+                vibratoGain.gain.setValueAtTime(1.5, now);
+
+                vibratoLfo.connect(vibratoGain);
+                vibratoGain.connect(padOsc.frequency);
+
+                const padGain = this.audioCtx.createGain();
+                padGain.gain.setValueAtTime(0.0, now);
+                padGain.gain.linearRampToValueAtTime(0.035, now + 2.0);
+                padGain.gain.setValueAtTime(0.035, now + duration - 2.5);
+                padGain.gain.exponentialRampToValueAtTime(0.001, now + duration);
+
+                padOsc.connect(padGain);
+                padGain.connect(this.padFilterNode);
+
+                vibratoLfo.start(now);
+                padOsc.start(now);
+
+                chordOscillators.push(padOsc, vibratoLfo);
+                chordGains.push(padGain, vibratoGain);
+
+                const arpeggioPattern = [0, 1, 2, 3, 4, 5, 2, 3, 4, 1, 0, 2];
+                arpeggioPattern.forEach((noteIdx, seqIdx) => {
+                    const freq = chord.notes[noteIdx];
+                    const noteDelay = seqIdx * 0.38;
+                    const playTime = now + noteDelay;
+
+                    const osc1 = this.audioCtx.createOscillator();
+                    const osc2 = this.audioCtx.createOscillator();
+                    osc1.type = 'sine';
+                    osc2.type = 'sine';
+                    osc1.frequency.setValueAtTime(freq, playTime);
+                    osc2.frequency.setValueAtTime(freq * 2, playTime);
+                    osc1.detune.setValueAtTime(-4, playTime);
+                    osc2.detune.setValueAtTime(4, playTime);
+
+                    const voiceGain = this.audioCtx.createGain();
+                    voiceGain.gain.setValueAtTime(0.0, playTime);
+                    const targetVol = noteIdx === 0 ? 0.06 : 0.03;
+                    voiceGain.gain.linearRampToValueAtTime(targetVol, playTime + 1.2);
+                    voiceGain.gain.setValueAtTime(targetVol, playTime + duration - 2.5 - noteDelay);
+                    voiceGain.gain.exponentialRampToValueAtTime(0.001, playTime + duration - noteDelay);
+
+                    const notePan = ((noteIdx % 2 === 0 ? -1 : 1) * (0.3 + (noteIdx * 0.08))).toFixed(2);
+                    const voicePanner = this.audioCtx.createStereoPanner ? this.audioCtx.createStereoPanner() : null;
+
+                    osc1.connect(voiceGain);
+                    osc2.connect(voiceGain);
+
+                    if (voicePanner) {
+                        voicePanner.pan.setValueAtTime(parseFloat(notePan), playTime);
+                        voiceGain.connect(voicePanner);
+                        voicePanner.connect(this.filterNode);
+                        chordGains.push(voicePanner);
+                    } else {
+                        voiceGain.connect(this.filterNode);
+                    }
+
+                    osc1.start(playTime);
+                    osc2.start(playTime);
+                    chordOscillators.push(osc1, osc2);
+                    chordGains.push(voiceGain);
+                });
+
+                const bassFreq = chord.root / 2;
+                const leftOsc1 = this.audioCtx.createOscillator();
+                const leftOsc2 = this.audioCtx.createOscillator();
+                leftOsc1.type = 'sine';
+                leftOsc2.type = 'triangle';
+                leftOsc1.frequency.setValueAtTime(bassFreq, now);
+                leftOsc2.frequency.setValueAtTime(bassFreq * 2, now);
+
+                const rightOsc1 = this.audioCtx.createOscillator();
+                const rightOsc2 = this.audioCtx.createOscillator();
+                rightOsc1.type = 'sine';
+                rightOsc2.type = 'triangle';
+                rightOsc1.frequency.setValueAtTime(bassFreq, now);
+                rightOsc2.frequency.setValueAtTime(bassFreq * 2, now);
+
+                const bassGainL = this.audioCtx.createGain();
+                const bassGainR = this.audioCtx.createGain();
+                bassGainL.gain.setValueAtTime(0.0, now);
+                bassGainR.gain.setValueAtTime(0.0, now);
+
+                bassGainL.gain.linearRampToValueAtTime(0.24, now + 0.40);
+                bassGainL.gain.setValueAtTime(0.24, now + 2.4);
+                bassGainL.gain.exponentialRampToValueAtTime(0.001, now + duration - 0.5);
+
+                bassGainR.gain.linearRampToValueAtTime(0.24, now + 0.40);
+                bassGainR.gain.setValueAtTime(0.24, now + 2.4);
+                bassGainR.gain.exponentialRampToValueAtTime(0.001, now + duration - 0.5);
+
+                leftOsc1.connect(this.bassFilterNode);
+                leftOsc2.connect(this.bassFilterNode);
+                this.bassFilterNode.connect(bassGainL);
+                if (this.bassPanL) {
+                    bassGainL.connect(this.bassPanL);
+                    this.bassPanL.connect(this.mainGain);
+                } else {
+                    bassGainL.connect(this.mainGain);
+                }
+
+                rightOsc1.connect(this.bassFilterNode);
+                rightOsc2.connect(this.bassFilterNode);
+                this.bassFilterNode.connect(this.bassDelayNode);
+                this.bassDelayNode.connect(bassGainR);
+                if (this.bassPanR) {
+                    bassGainR.connect(this.bassPanR);
+                    this.bassPanR.connect(this.mainGain);
+                } else {
+                    bassGainR.connect(this.mainGain);
+                }
+
+                leftOsc1.start(now);
+                leftOsc2.start(now);
+                rightOsc1.start(now);
+                rightOsc2.start(now);
+
+                chordOscillators.push(leftOsc1, leftOsc2, rightOsc1, rightOsc2);
+                chordGains.push(bassGainL, bassGainR);
+
+                // Store references for cleanup
+                this.activeChordNodes.push(...chordOscillators, ...chordGains);
+
+                this.currentChordIdx = (this.currentChordIdx + 1) % this.chords.length;
+
+                // Clean up this chord's nodes after they finish
+                const cleanupTimeout = setTimeout(() => {
+                    chordOscillators.forEach(osc => {
+                        try { osc.stop(); } catch (e) {}
+                        try { osc.disconnect(); } catch (e) {}
+                    });
+                    chordGains.forEach(g => {
+                        try { g.disconnect(); } catch (e) {}
+                    });
+                    // Remove from active list
+                    this.activeChordNodes = this.activeChordNodes.filter(node => !chordOscillators.includes(node) && !chordGains.includes(node));
+                }, duration * 1000 + 2000);
+
+                this.chordTimeout = setTimeout(() => this.playNextChord(), (duration - 1.5) * 1000);
+            }
+
+            stop() {
+                if (!this.isPlaying) return;
+                this.isPlaying = false;
+                if (this.chordTimeout) clearTimeout(this.chordTimeout);
+
+                // Stop all currently active chord nodes to avoid errors
+                this.activeChordNodes.forEach(node => {
+                    try { node.stop(); } catch (e) {}
+                    try { node.disconnect(); } catch (e) {}
+                });
+                this.activeChordNodes = [];
+
+                const now = this.audioCtx.currentTime;
+                this.mainGain.gain.cancelScheduledValues(now);
+                this.mainGain.gain.setValueAtTime(this.mainGain.gain.value, now);
+                this.mainGain.gain.linearRampToValueAtTime(0.0, now + 1.5);
+
+                setTimeout(() => {
+                    if (!this.isPlaying && this.audioCtx) {
+                        this.audioCtx.close();
+                        this.audioCtx = null;
+                    }
+                }, 1600);
+            }
+        }
+
+        class PartyMusicGenerator {
+            constructor() {
+                this.audioCtx = null;
+                this.isPlaying = false;
+                this.analyser = null;
+                this.mainGain = null;
+                this.timerId = null;
+                this.nextStepTime = 0.0;
+                this.currentStep = 0;
+                this.bpm = 124;
+                this.stepDuration = 60 / this.bpm / 4;
+                this.lookAhead = 0.12;
+                this.scheduleInterval = 30;
+                this.activeStepNodes = []; // optional, we won't use heavy cleanup for short notes
+
+                this.progression = [{
+                    piano: [220.00, 261.63, 329.63, 440.00],
+                    strings: [220.00, 329.63],
+                    bass: 55.00,
+                    guitar: [261.63, 329.63, 440.00, 392.00]
+                }, {
+                    piano: [174.61, 261.63, 349.23, 440.00],
+                    strings: [174.61, 220.00],
+                    bass: 43.65,
+                    guitar: [261.63, 349.23, 440.00, 392.00]
+                }];
+            }
+
+            init() {
+                this.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                this.analyser = this.audioCtx.createAnalyser();
+                this.analyser.fftSize = 64;
+
+                this.mainGain = this.audioCtx.createGain();
+                this.mainGain.gain.setValueAtTime(0.0, this.audioCtx.currentTime);
+
+                this.filterNode = this.audioCtx.createBiquadFilter();
+                this.filterNode.type = 'lowpass';
+                this.filterNode.frequency.setValueAtTime(2200, this.audioCtx.currentTime);
+
+                this.bassFilterNode = this.audioCtx.createBiquadFilter();
+                this.bassFilterNode.type = 'lowpass';
+                this.bassFilterNode.frequency.setValueAtTime(140, this.audioCtx.currentTime);
+
+                this.bassDelayNode = this.audioCtx.createDelay(0.1);
+                this.bassDelayNode.delayTime.setValueAtTime(0.022, this.audioCtx.currentTime);
+
+                this.bassPanL = this.audioCtx.createStereoPanner ? this.audioCtx.createStereoPanner() : null;
+                this.bassPanR = this.audioCtx.createStereoPanner ? this.audioCtx.createStereoPanner() : null;
+                if (this.bassPanL) this.bassPanL.pan.setValueAtTime(-0.85, this.audioCtx.currentTime);
+                if (this.bassPanR) this.bassPanR.pan.setValueAtTime(0.85, this.audioCtx.currentTime);
+
+                this.filterNode.connect(this.mainGain);
+                this.mainGain.connect(this.analyser);
+                this.analyser.connect(this.audioCtx.destination);
+            }
+
+            start() {
+                if (this.isPlaying) return;
+                if (!this.audioCtx) this.init();
+                if (this.audioCtx.state === 'suspended') this.audioCtx.resume();
+
+                this.isPlaying = true;
+                this.mainGain.gain.cancelScheduledValues(this.audioCtx.currentTime);
+                this.mainGain.gain.setValueAtTime(0.0, this.audioCtx.currentTime);
+
+                const targetGain = (engineSound.isPlaying || exhaustSound.isPlaying) ? 0.05 : 0.42;
+                this.mainGain.gain.linearRampToValueAtTime(targetGain, this.audioCtx.currentTime + 1.5);
+
+                this.currentStep = 0;
+                this.nextStepTime = this.audioCtx.currentTime + 0.05;
+                this.timerId = setInterval(() => this.scheduler(), this.scheduleInterval);
+            }
+
+            fadeTo(targetGain, duration = 1.0) {
+                if (!this.isPlaying || !this.audioCtx || !this.mainGain) return;
+                const now = this.audioCtx.currentTime;
+                this.mainGain.gain.cancelScheduledValues(now);
+                this.mainGain.gain.setValueAtTime(this.mainGain.gain.value, now);
+                this.mainGain.gain.linearRampToValueAtTime(targetGain, now + duration);
+            }
+
+            scheduler() {
+                if (!this.isPlaying) return;
+                while (this.nextStepTime < this.audioCtx.currentTime + this.lookAhead) {
+                    this.scheduleStep(this.currentStep, this.nextStepTime);
+                    this.nextStepTime += this.stepDuration;
+                    this.currentStep = (this.currentStep + 1) % 32;
+                }
+            }
+
+            scheduleStep(step, time) {
+                const measureIdx = Math.floor(step / 16);
+                const localStep = step % 16;
+                const section = this.progression[measureIdx];
+
+                if (localStep === 0 || localStep === 4 || localStep === 8 || localStep === 12) {
+                    this.playKick(time);
+                }
+                if (localStep === 8) {
+                    this.playSnare(time);
+                } else if (localStep === 14 && step === 30) {
+                    this.playSnare(time, 0.4);
+                }
+                if (localStep === 2 || localStep === 6 || localStep === 10 || localStep === 14) {
+                    this.playHat(time, false);
+                }
+                if (localStep === 4 || localStep === 12) {
+                    this.playHat(time, true);
+                }
+
+                const bassPattern = [0, 2, 3, 5, 8, 10, 11, 13];
+                if (bassPattern.includes(localStep)) {
+                    const dur = this.stepDuration * (localStep === 3 || localStep === 11 ? 1.8 : 0.95);
+                    this.playBass(time, section.bass, dur);
+                }
+
+                if (localStep === 0) {
+                    this.playPiano(time, section.piano, this.stepDuration * 3.5);
+                } else if (localStep === 6) {
+                    this.playPiano(time, section.piano, this.stepDuration * 1.8);
+                } else if (localStep === 10) {
+                    this.playPiano(time, section.piano, this.stepDuration * 3.5);
+                }
+
+                if (localStep === 0) {
+                    this.playStrings(time, section.strings, this.stepDuration * 16);
+                }
+
+                if (localStep === 2) {
+                    this.playGuitar(time, section.guitar[0], this.stepDuration * 2);
+                } else if (localStep === 5) {
+                    this.playGuitar(time, section.guitar[1], this.stepDuration * 1.5);
+                } else if (localStep === 7) {
+                    this.playGuitar(time, section.guitar[2], this.stepDuration * 2);
+                } else if (localStep === 13) {
+                    this.playGuitar(time, section.guitar[3], this.stepDuration * 2);
+                }
+
+                if (localStep === 0) {
+                    this.playViolin(time, measureIdx === 0 ? 440.00 : 587.33, this.stepDuration * 3.8);
+                } else if (localStep === 4) {
+                    this.playViolin(time, measureIdx === 0 ? 493.88 : 523.25, this.stepDuration * 3.8);
+                } else if (localStep === 8) {
+                    this.playViolin(time, measureIdx === 0 ? 523.25 : 440.00, this.stepDuration * 7.5);
+                }
+            }
+
+            playKick(time) {
+                const osc = this.audioCtx.createOscillator();
+                const gain = this.audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(this.mainGain);
+                osc.frequency.setValueAtTime(140, time);
+                osc.frequency.exponentialRampToValueAtTime(38, time + 0.22);
+                gain.gain.setValueAtTime(1.1, time);
+                gain.gain.exponentialRampToValueAtTime(0.001, time + 0.22);
+                osc.start(time);
+                osc.stop(time + 0.24);
+            }
+
+            playSnare(time, volScale = 1.0) {
+                const bufferSize = this.audioCtx.sampleRate * 0.18;
+                const buffer = this.audioCtx.createBuffer(1, bufferSize, this.audioCtx.sampleRate);
+                const data = buffer.getChannelData(0);
+                for (let i = 0; i < bufferSize; i++) {
+                    data[i] = Math.random() * 2 - 1;
+                }
+                const noise = this.audioCtx.createBufferSource();
+                noise.buffer = buffer;
+                const filter = this.audioCtx.createBiquadFilter();
+                filter.type = 'bandpass';
+                filter.frequency.setValueAtTime(1200, time);
+                const noiseGain = this.audioCtx.createGain();
+                noiseGain.gain.setValueAtTime(0.24 * volScale, time);
+                noiseGain.gain.exponentialRampToValueAtTime(0.001, time + 0.15);
+                noise.connect(filter);
+                filter.connect(noiseGain);
+                noiseGain.connect(this.mainGain);
+
+                const osc = this.audioCtx.createOscillator();
+                const oscGain = this.audioCtx.createGain();
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(180, time);
+                oscGain.gain.setValueAtTime(0.25 * volScale, time);
+                oscGain.gain.exponentialRampToValueAtTime(0.001, time + 0.08);
+                osc.connect(oscGain);
+                oscGain.connect(this.mainGain);
+
+                noise.start(time);
+                noise.stop(time + 0.16);
+                osc.start(time);
+                osc.stop(time + 0.09);
+            }
+
+            playHat(time, isOpen = false) {
+                const bufferSize = this.audioCtx.sampleRate * (isOpen ? 0.22 : 0.06);
+                const buffer = this.audioCtx.createBuffer(1, bufferSize, this.audioCtx.sampleRate);
+                const data = buffer.getChannelData(0);
+                for (let i = 0; i < bufferSize; i++) {
+                    data[i] = Math.random() * 2 - 1;
+                }
+                const noise = this.audioCtx.createBufferSource();
+                noise.buffer = buffer;
+                const filter = this.audioCtx.createBiquadFilter();
+                filter.type = 'highpass';
+                filter.frequency.setValueAtTime(isOpen ? 7500 : 9000, time);
+                const gain = this.audioCtx.createGain();
+                gain.gain.setValueAtTime(isOpen ? 0.06 : 0.09, time);
+                gain.gain.exponentialRampToValueAtTime(0.001, time + (isOpen ? 0.20 : 0.05));
+                noise.connect(filter);
+                filter.connect(gain);
+                gain.connect(this.mainGain);
+                noise.start(time);
+                noise.stop(time + (isOpen ? 0.22 : 0.07));
+            }
+
+            playBass(time, freq, duration) {
+                const osc1 = this.audioCtx.createOscillator();
+                const osc2 = this.audioCtx.createOscillator();
+                osc1.type = 'sawtooth';
+                osc2.type = 'square';
+                osc1.frequency.setValueAtTime(freq, time);
+                osc2.frequency.setValueAtTime(freq * 1.006, time);
+
+                const gainL = this.audioCtx.createGain();
+                const gainR = this.audioCtx.createGain();
+                gainL.gain.setValueAtTime(0.0, time);
+                gainR.gain.setValueAtTime(0.0, time);
+
+                gainL.gain.linearRampToValueAtTime(0.28, time + 0.045);
+                gainL.gain.setValueAtTime(0.28, time + duration - 0.02);
+                gainL.gain.exponentialRampToValueAtTime(0.001, time + duration);
+
+                gainR.gain.linearRampToValueAtTime(0.28, time + 0.045);
+                gainR.gain.setValueAtTime(0.28, time + duration - 0.02);
+                gainR.gain.exponentialRampToValueAtTime(0.001, time + duration);
+
+                osc1.connect(this.bassFilterNode);
+                osc2.connect(this.bassFilterNode);
+                this.bassFilterNode.connect(gainL);
+                if (this.bassPanL) {
+                    gainL.connect(this.bassPanL);
+                    this.bassPanL.connect(this.mainGain);
+                } else {
+                    gainL.connect(this.mainGain);
+                }
+
+                this.bassFilterNode.connect(this.bassDelayNode);
+                this.bassDelayNode.connect(gainR);
+                if (this.bassPanR) {
+                    gainR.connect(this.bassPanR);
+                    this.bassPanR.connect(this.mainGain);
+                } else {
+                    gainR.connect(this.mainGain);
+                }
+
+                osc1.start(time);
+                osc2.start(time);
+                osc1.stop(time + duration);
+                osc2.stop(time + duration);
+            }
+
+            playPiano(time, notes, duration) {
+                notes.forEach((freq) => {
+                    const osc1 = this.audioCtx.createOscillator();
+                    const osc2 = this.audioCtx.createOscillator();
+                    osc1.type = 'triangle';
+                    osc2.type = 'sine';
+                    osc1.frequency.setValueAtTime(freq, time);
+                    osc2.frequency.setValueAtTime(freq * 2, time);
+                    osc1.detune.setValueAtTime(-5, time);
+                    osc2.detune.setValueAtTime(5, time);
+
+                    const gain = this.audioCtx.createGain();
+                    gain.gain.setValueAtTime(0.0, time);
+                    gain.gain.linearRampToValueAtTime(0.09, time + 0.015);
+                    gain.gain.exponentialRampToValueAtTime(0.001, time + duration);
+
+                    osc1.connect(gain);
+                    osc2.connect(gain);
+                    gain.connect(this.filterNode);
+
+                    osc1.start(time);
+                    osc2.start(time);
+                    osc1.stop(time + duration);
+                    osc2.stop(time + duration);
+                });
+            }
+
+            playStrings(time, freqs, duration) {
+                freqs.forEach((freq) => {
+                    const osc1 = this.audioCtx.createOscillator();
+                    const osc2 = this.audioCtx.createOscillator();
+                    osc1.type = 'triangle';
+                    osc2.type = 'sawtooth';
+                    osc1.frequency.setValueAtTime(freq, time);
+                    osc2.frequency.setValueAtTime(freq * 1.008, time);
+
+                    const stringsFilter = this.audioCtx.createBiquadFilter();
+                    stringsFilter.type = 'lowpass';
+                    stringsFilter.frequency.setValueAtTime(900, time);
+
+                    const gain = this.audioCtx.createGain();
+                    gain.gain.setValueAtTime(0.0, time);
+                    gain.gain.linearRampToValueAtTime(0.045, time + 0.40);
+                    gain.gain.setValueAtTime(0.045, time + duration - 0.40);
+                    gain.gain.exponentialRampToValueAtTime(0.001, time + duration);
+
+                    osc1.connect(stringsFilter);
+                    osc2.connect(stringsFilter);
+                    stringsFilter.connect(gain);
+                    gain.connect(this.mainGain);
+
+                    osc1.start(time);
+                    osc2.start(time);
+                    osc1.stop(time + duration);
+                    osc2.stop(time + duration);
+                });
+            }
+
+            playGuitar(time, freq, duration) {
+                const osc1 = this.audioCtx.createOscillator();
+                const osc2 = this.audioCtx.createOscillator();
+                osc1.type = 'sawtooth';
+                osc2.type = 'triangle';
+                osc1.frequency.setValueAtTime(freq, time);
+                osc2.frequency.setValueAtTime(freq * 2, time);
+
+                const guitarFilter = this.audioCtx.createBiquadFilter();
+                guitarFilter.type = 'bandpass';
+                guitarFilter.frequency.setValueAtTime(1400, time);
+                guitarFilter.frequency.exponentialRampToValueAtTime(350, time + 0.12);
+
+                const gain = this.audioCtx.createGain();
+                gain.gain.setValueAtTime(0.0, time);
+                gain.gain.linearRampToValueAtTime(0.12, time + 0.01);
+                gain.gain.exponentialRampToValueAtTime(0.001, time + duration);
+
+                osc1.connect(guitarFilter);
+                osc2.connect(guitarFilter);
+                guitarFilter.connect(gain);
+                gain.connect(this.mainGain);
+
+                osc1.start(time);
+                osc2.start(time);
+                osc1.stop(time + duration);
+                osc2.stop(time + duration);
+            }
+
+            playViolin(time, freq, duration) {
+                const osc = this.audioCtx.createOscillator();
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(freq, time);
+
+                const vibratoLfo = this.audioCtx.createOscillator();
+                vibratoLfo.type = 'sine';
+                vibratoLfo.frequency.setValueAtTime(6.0, time);
+                const vibratoGain = this.audioCtx.createGain();
+                vibratoGain.gain.setValueAtTime(3.0, time);
+
+                vibratoLfo.connect(vibratoGain);
+                vibratoGain.connect(osc.frequency);
+
+                const resonanceFilter = this.audioCtx.createBiquadFilter();
+                resonanceFilter.type = 'bandpass';
+                resonanceFilter.frequency.setValueAtTime(1000, time);
+                resonanceFilter.Q.setValueAtTime(1.8, time);
+
+                const gain = this.audioCtx.createGain();
+                gain.gain.setValueAtTime(0.0, time);
+                gain.gain.linearRampToValueAtTime(0.07, time + 0.16);
+                gain.gain.setValueAtTime(0.07, time + duration - 0.16);
+                gain.gain.exponentialRampToValueAtTime(0.001, time + duration);
+
+                osc.connect(resonanceFilter);
+                resonanceFilter.connect(gain);
+                gain.connect(this.mainGain);
+
+                vibratoLfo.start(time);
+                osc.start(time);
+                vibratoLfo.stop(time + duration);
+                osc.stop(time + duration);
+            }
+
+            stop() {
+                if (!this.isPlaying) return;
+                this.isPlaying = false;
+                if (this.timerId) clearInterval(this.timerId);
+
+                const now = this.audioCtx.currentTime;
+                this.mainGain.gain.cancelScheduledValues(now);
+                this.mainGain.gain.setValueAtTime(this.mainGain.gain.value, now);
+                this.mainGain.gain.linearRampToValueAtTime(0.0, now + 1.2);
+
+                setTimeout(() => {
+                    if (!this.isPlaying && this.audioCtx) {
+                        this.audioCtx.close();
+                        this.audioCtx = null;
+                    }
+                }, 1300);
+            }
+        }
+
+        const ambientMusic = new AmbientMusicGenerator();
+        window.ambientMusic = ambientMusic;
+
+        const partyMusic = new PartyMusicGenerator();
+        window.partyMusic = partyMusic;
+
+        const musicBtn = document.getElementById('music-toggle-btn');
+        if (musicBtn) {
+            musicBtn.addEventListener('click', () => {
+                if (ambientMusic.isPlaying) {
+                    ambientMusic.stop();
+                    musicBtn.classList.remove('playing');
+                } else {
+                    if (partyMusic.isPlaying) {
+                        partyMusic.stop();
+                        const partyBtn = document.getElementById('party-music-toggle-btn');
+                        if (partyBtn) partyBtn.classList.remove('playing');
+                    }
+                    ambientMusic.start();
+                    musicBtn.classList.add('playing');
+                }
+            });
+        }
+
+        const partyBtn = document.getElementById('party-music-toggle-btn');
+        if (partyBtn) {
+            partyBtn.addEventListener('click', () => {
+                if (partyMusic.isPlaying) {
+                    partyMusic.stop();
+                    partyBtn.classList.remove('playing');
+                } else {
+                    if (ambientMusic.isPlaying) {
+                        ambientMusic.stop();
+                        if (musicBtn) musicBtn.classList.remove('playing');
+                    }
+                    partyMusic.start();
+                    partyBtn.classList.add('playing');
+                }
+            });
+        }
+    </script>
+</body>
+
+</html>
