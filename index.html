@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description"
-    content="Experience the high-performance BMW M4 CS in a minimalistic 2D studio, exploring its engineering, laser headlights, OLED signatures, and track-focused dynamics.">
+        content="Experience the high-performance BMW M4 CS in a minimalistic 2D studio, exploring its engineering, laser headlights, OLED signatures, and track-focused dynamics.">
     <title>BMW M4 CS — Studio (Lite Edition)</title>
     <!-- Google Fonts for premium typography -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -92,6 +92,7 @@
         body.cinematic-mode #bg-overlay {
             background: #040406;
         }
+
         body.cinematic-mode #bg-glow-teal,
         body.cinematic-mode #bg-glow-red {
             opacity: 1;
@@ -100,6 +101,7 @@
         body.studio-mode #bg-overlay {
             background: radial-gradient(circle at 50% 30%, #0d0d12 0%, #040406 100%);
         }
+
         body.studio-mode #bg-softbox {
             opacity: 1;
         }
@@ -111,7 +113,7 @@
             left: 0;
             width: 100%;
             height: 80px;
-            padding: 20px 4%;
+            padding: 25px 8%;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -145,9 +147,9 @@
         }
 
         nav .brand {
-            flex-shrink: 0;
+            flex: 1;
             font-family: var(--font-display);
-            font-size: 1.3rem;
+            font-size: 1.4rem;
             font-weight: 900;
             letter-spacing: 2px;
             text-transform: uppercase;
@@ -155,29 +157,22 @@
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
-            white-space: nowrap;
-            margin-right: 15px;
         }
 
         nav .nav-links {
-            flex: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 18px;
-            white-space: nowrap;
+            flex: 4;
+            text-align: center;
         }
 
         nav .nav-links a {
             color: var(--color-text);
             text-decoration: none;
-            margin: 0;
-            font-size: 0.8rem;
+            margin: 0 20px;
+            font-size: 0.85rem;
             font-weight: 700;
-            letter-spacing: 2px;
+            letter-spacing: 3px;
             text-transform: uppercase;
             transition: 0.3s ease;
-            white-space: nowrap;
         }
 
         nav .nav-links a:hover {
@@ -188,9 +183,8 @@
         }
 
         nav .nav-actions {
-            flex-shrink: 0;
+            flex: 1;
             text-align: right;
-            margin-left: 15px;
         }
 
         nav .nav-btn {
@@ -314,6 +308,7 @@
             border-color: rgba(36, 158, 160, 0.2);
             box-shadow: 0 0 25px rgba(36, 158, 160, 0.12), 0 25px 50px rgba(0, 0, 0, 0.5);
         }
+
         body.cinematic-mode .visual-card:hover {
             box-shadow: 0 0 35px rgba(36, 158, 160, 0.28), 0 25px 60px rgba(0, 0, 0, 0.6);
         }
@@ -325,17 +320,49 @@
 
         /* Vibration Animation for Revving */
         @keyframes engineVibration {
-            0% { transform: translate(0, 0); }
-            10% { transform: translate(-0.5px, 0.5px); }
-            20% { transform: translate(-1px, 0px); }
-            30% { transform: translate(0.5px, -0.5px); }
-            40% { transform: translate(1px, 0.5px); }
-            50% { transform: translate(-0.5px, -1px); }
-            60% { transform: translate(-1px, 0.5px); }
-            70% { transform: translate(1px, -0.5px); }
-            80% { transform: translate(-0.5px, 0px); }
-            90% { transform: translate(0.5px, 0.5px); }
-            100% { transform: translate(0, 0); }
+            0% {
+                transform: translate(0, 0);
+            }
+
+            10% {
+                transform: translate(-0.5px, 0.5px);
+            }
+
+            20% {
+                transform: translate(-1px, 0px);
+            }
+
+            30% {
+                transform: translate(0.5px, -0.5px);
+            }
+
+            40% {
+                transform: translate(1px, 0.5px);
+            }
+
+            50% {
+                transform: translate(-0.5px, -1px);
+            }
+
+            60% {
+                transform: translate(-1px, 0.5px);
+            }
+
+            70% {
+                transform: translate(1px, -0.5px);
+            }
+
+            80% {
+                transform: translate(-0.5px, 0px);
+            }
+
+            90% {
+                transform: translate(0.5px, 0.5px);
+            }
+
+            100% {
+                transform: translate(0, 0);
+            }
         }
 
         .visual-card img.vibrating {
@@ -365,7 +392,7 @@
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
-            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
         }
 
         body.cinematic-mode .glass-card h2 {
@@ -976,7 +1003,8 @@
         <div class="nav-logo">
             <img onclick="location.href='#hero'" src="logo.png" style="margin-right: 30px;">
         </div>
-        <div class="brand">BMW M4 CS <span style="font-size: 0.6rem; vertical-align: top; color: var(--color-accent);">LITE</span></div>
+        <div class="brand">BMW M4 CS <span
+                style="font-size: 0.6rem; vertical-align: top; color: var(--color-accent);">LITE</span></div>
         <div class="nav-links">
             <a href="#hero">Stance</a>
             <a href="#headlight">Lights</a>
@@ -984,7 +1012,6 @@
             <a href="#engineering">Engine</a>
             <a href="#tyres">Dynamics</a>
             <a href="#exhaust">Exhaust</a>
-            <a href="#cta">Look</a>
         </div>
         <div class="nav-actions">
             <a href="#cta" class="nav-btn">Reserve</a>
@@ -1067,8 +1094,10 @@
                 <div class="hero-panel">
                     <div class="badge">Dynamic Showcase — Lite</div>
                     <h1>BMW M4 CS</h1>
-                    <p style="margin-bottom: 30px;">Pure raw performance and lightweight track engineering, presented in a high-efficiency visual showroom.</p>
-                    <a href="#headlight" class="action-btn" style="padding: 10px 25px; font-size: 0.75rem;">Explore Details</a>
+                    <p style="margin-bottom: 30px;">Pure raw performance and lightweight track engineering, presented in
+                        a high-efficiency visual showroom.</p>
+                    <a href="#headlight" class="action-btn" style="padding: 10px 25px; font-size: 0.75rem;">Explore
+                        Details</a>
                 </div>
             </div>
             <div class="visual-card">
@@ -1081,7 +1110,8 @@
             <div class="section-content">
                 <div class="glass-card">
                     <h2>Laser Illumination</h2>
-                    <p>High-definition adaptive laser matrix projector array, projecting a piercing signature silhouette with
+                    <p>High-definition adaptive laser matrix projector array, projecting a piercing signature silhouette
+                        with
                         dynamic roadway pathfinder mapping. Crucial for high-speed night runs on the Nürburgring.</p>
                 </div>
             </div>
@@ -1095,7 +1125,8 @@
             <div class="section-content">
                 <div class="cockpit-spec">
                     <h2>Command Center</h2>
-                    <p>Aerospace-grade autoclave carbon composite structures, housing tactile high-frequency telemetry matrices and
+                    <p>Aerospace-grade autoclave carbon composite structures, housing tactile high-frequency telemetry
+                        matrices and
                         racing telemetry interfaces.</p>
                     <ul>
                         <li>M-Mode Driver Integration</li>
@@ -1114,8 +1145,9 @@
             <div class="section-content">
                 <div class="glass-card">
                     <h2>Power Assembly</h2>
-                    <p style="margin-bottom: 25px;">The twin-turbocharged inline-6 engine produces a massive output, delivering power to the tarmac with zero delay.</p>
-                    
+                    <p style="margin-bottom: 25px;">The twin-turbocharged inline-6 engine produces a massive output,
+                        delivering power to the tarmac with zero delay.</p>
+
                     <!-- HUD Specs callout -->
                     <div class="hud-content">
                         <span class="hud-title">POWER ASSEMBLY</span>
@@ -1139,10 +1171,10 @@
                                 <span class="player-title">Engine sound</span>
                                 <span class="player-subtitle">revs on hover</span>
                             </div>
-                            <canvas class="wave-visualizer" id="engine-canvas" width="160" height="40" data-accent="#249ea0"
-                                data-color1="rgba(36, 158, 160, 0.95)" data-color2="rgba(30, 200, 203, 0.70)"
-                                data-color3="rgba(36, 158, 160, 0.45)" data-color4="rgba(255, 255, 255, 0.25)"
-                                data-color5="rgba(36, 158, 160, 0.15)"></canvas>
+                            <canvas class="wave-visualizer" id="engine-canvas" width="160" height="40"
+                                data-accent="#249ea0" data-color1="rgba(36, 158, 160, 0.95)"
+                                data-color2="rgba(30, 200, 203, 0.70)" data-color3="rgba(36, 158, 160, 0.45)"
+                                data-color4="rgba(255, 255, 255, 0.25)" data-color5="rgba(36, 158, 160, 0.15)"></canvas>
                         </div>
                     </div>
                 </div>
@@ -1157,8 +1189,10 @@
             <div class="section-content">
                 <div class="glass-card">
                     <h2>Forged Dynamics</h2>
-                    <p>Monoblock forged competition wheels, wrapped in high-hysteresis sticky racing slick compound for extreme
-                        lateral acceleration indices. Complete with carbon-ceramic brakes for fade-free stopping power.</p>
+                    <p>Monoblock forged competition wheels, wrapped in high-hysteresis sticky racing slick compound for
+                        extreme
+                        lateral acceleration indices. Complete with carbon-ceramic brakes for fade-free stopping power.
+                    </p>
                 </div>
             </div>
             <div class="visual-card">
@@ -1171,7 +1205,8 @@
             <div class="section-content">
                 <div class="glass-card">
                     <h2>Acoustic Dominance</h2>
-                    <p style="margin-bottom: 25px;">Active valve-controlled quad-titanium exhaust array, tuning raw engine combustion pulses into a symphonic, spine-tingling acoustic roar.</p>
+                    <p style="margin-bottom: 25px;">Active valve-controlled quad-titanium exhaust array, tuning raw
+                        engine combustion pulses into a symphonic, spine-tingling acoustic roar.</p>
 
                     <!-- Interactive Exhaust Audio Player -->
                     <div class="audio-wrapper">
@@ -1189,10 +1224,10 @@
                                 <span class="player-title">Exhaust sound</span>
                                 <span class="player-subtitle">revs on hover</span>
                             </div>
-                            <canvas class="wave-visualizer" id="exhaust-canvas" width="160" height="40" data-accent="#c44536"
-                                data-color1="rgba(196, 69, 54, 0.95)" data-color2="rgba(235, 94, 40, 0.70)"
-                                data-color3="rgba(196, 69, 54, 0.45)" data-color4="rgba(255, 255, 255, 0.25)"
-                                data-color5="rgba(196, 69, 54, 0.15)"></canvas>
+                            <canvas class="wave-visualizer" id="exhaust-canvas" width="160" height="40"
+                                data-accent="#c44536" data-color1="rgba(196, 69, 54, 0.95)"
+                                data-color2="rgba(235, 94, 40, 0.70)" data-color3="rgba(196, 69, 54, 0.45)"
+                                data-color4="rgba(255, 255, 255, 0.25)" data-color5="rgba(196, 69, 54, 0.15)"></canvas>
                         </div>
                     </div>
                 </div>
@@ -1207,7 +1242,8 @@
             <div class="section-content">
                 <div class="glass-card">
                     <h2>OLED Signatures</h2>
-                    <p>Hyper-detailed three-dimensional organic light emitting diode (OLED) signatures, forming a high-contrast
+                    <p>Hyper-detailed three-dimensional organic light emitting diode (OLED) signatures, forming a
+                        high-contrast
                         trailing light aesthetic that commands presence even from behind.</p>
                 </div>
             </div>
@@ -1221,12 +1257,14 @@
             <div class="section-content">
                 <div class="glass-card">
                     <h2>The Brand BMW</h2>
-                    <p>The M4 Competition Sport represents the absolute pinnacle of motorsport breeding. A brutal track-focused
+                    <p>The M4 Competition Sport represents the absolute pinnacle of motorsport breeding. A brutal
+                        track-focused
                         weapon engineered with uncompromising dynamics, direct feedback, and aggressive styling.</p>
                 </div>
             </div>
             <div class="visual-card">
-                <img src="mcomp.png" alt="BMW M Competition Logo" style="object-fit: contain; width: 75%; height: auto; margin: auto;">
+                <img src="mcomp.png" alt="BMW M Competition Logo"
+                    style="object-fit: contain; width: 75%; height: auto; margin: auto;">
             </div>
         </section>
 
@@ -1234,14 +1272,16 @@
         <section id="cta">
             <div class="cta-panel">
                 <h2>Acquire Stance.</h2>
-                <p style="color: var(--color-muted); margin-bottom: 20px; font-size: 1.1rem;">Secure your custom BMW M4 Competition Sport order track slot today.</p>
+                <p style="color: var(--color-muted); margin-bottom: 20px; font-size: 1.1rem;">Secure your custom BMW M4
+                    Competition Sport order track slot today.</p>
                 <a href="#" class="action-btn">Configure & Order</a>
             </div>
         </section>
     </main>
 
     <!-- Version Switcher Floating Link (Bottom Right) -->
-    <a class="version-switcher" href="https://vip007vishal.github.io/BMW_MAX/" aria-label="Switch to 3D Experience" target="_blank" rel="noopener noreferrer">
+    <a class="version-switcher" href="https://vip007vishal.github.io/BMW_MAX/" aria-label="Switch to 3D Experience"
+        target="_blank" rel="noopener noreferrer">
         <svg viewBox="0 0 24 24">
             <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
         </svg>
@@ -1430,9 +1470,9 @@
                 const lfoToStop = this.lfo;
 
                 setTimeout(() => {
-                    oscsToStop.forEach(osc => { try { osc.stop(); } catch (e) {} });
-                    try { noiseToStop.stop(); } catch (e) {}
-                    try { lfoToStop.stop(); } catch (e) {}
+                    oscsToStop.forEach(osc => { try { osc.stop(); } catch (e) { } });
+                    try { noiseToStop.stop(); } catch (e) { }
+                    try { lfoToStop.stop(); } catch (e) { }
                 }, 250);
 
                 this.oscillators = [];
@@ -1883,11 +1923,11 @@
                 // Clean up this chord's nodes after they finish
                 const cleanupTimeout = setTimeout(() => {
                     chordOscillators.forEach(osc => {
-                        try { osc.stop(); } catch (e) {}
-                        try { osc.disconnect(); } catch (e) {}
+                        try { osc.stop(); } catch (e) { }
+                        try { osc.disconnect(); } catch (e) { }
                     });
                     chordGains.forEach(g => {
-                        try { g.disconnect(); } catch (e) {}
+                        try { g.disconnect(); } catch (e) { }
                     });
                     // Remove from active list
                     this.activeChordNodes = this.activeChordNodes.filter(node => !chordOscillators.includes(node) && !chordGains.includes(node));
@@ -1903,8 +1943,8 @@
 
                 // Stop all currently active chord nodes to avoid errors
                 this.activeChordNodes.forEach(node => {
-                    try { node.stop(); } catch (e) {}
-                    try { node.disconnect(); } catch (e) {}
+                    try { node.stop(); } catch (e) { }
+                    try { node.disconnect(); } catch (e) { }
                 });
                 this.activeChordNodes = [];
 
