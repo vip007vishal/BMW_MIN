@@ -1050,25 +1050,6 @@
         </svg>
     </button>
 
-    <!-- Visual Mode Toggle HUD at Top Center -->
-    <div class="scene-mode-toggle" id="scene-mode-toggle">
-        <div class="scene-mode-inner" id="scene-mode-inner">
-            <button class="scene-mode-btn active" id="scene-cinematic-btn" data-mode="cinematic">
-                <svg viewBox="0 0 24 24">
-                    <rect x="2" y="7" width="20" height="14" rx="2" />
-                    <path d="M16 2l-2.5 5M10 2L7.5 7M8 7v14M16 7v14" />
-                </svg>
-                Cinematic
-            </button>
-            <button class="scene-mode-btn" id="scene-studio-btn" data-mode="studio">
-                <svg viewBox="0 0 24 24">
-                    <circle cx="12" cy="12" r="10" />
-                    <circle cx="12" cy="12" r="4" fill="currentColor" />
-                </svg>
-                Studio
-            </button>
-        </div>
-    </div>
 
     <!-- Main Content Sections -->
     <main>
@@ -1294,20 +1275,21 @@
             if (mode === 'cinematic') {
                 document.body.classList.remove('studio-mode');
                 document.body.classList.add('cinematic-mode');
-                modeInner.classList.remove('studio-active');
-                modeCinematicBtn.classList.add('active');
-                modeStudioBtn.classList.remove('active');
+                if (modeInner) modeInner.classList.remove('studio-active');
+                if (modeCinematicBtn) modeCinematicBtn.classList.add('active');
+                if (modeStudioBtn) modeStudioBtn.classList.remove('active');
             } else {
                 document.body.classList.remove('cinematic-mode');
                 document.body.classList.add('studio-mode');
-                modeInner.classList.add('studio-active');
-                modeCinematicBtn.classList.remove('active');
-                modeStudioBtn.classList.add('active');
+                if (modeInner) modeInner.classList.add('studio-active');
+                if (modeCinematicBtn) modeCinematicBtn.classList.remove('active');
+                if (modeStudioBtn) modeStudioBtn.classList.add('active');
             }
         }
 
-        modeCinematicBtn.addEventListener('click', () => applyVisualMode('cinematic'));
-        modeStudioBtn.addEventListener('click', () => applyVisualMode('studio'));
+        if (modeCinematicBtn) modeCinematicBtn.addEventListener('click', () => applyVisualMode('cinematic'));
+        if (modeStudioBtn) modeStudioBtn.addEventListener('click', () => applyVisualMode('studio'));
+
 
 
         // --- 3. MOBILE MENU TOGGLE DRAWER ---
